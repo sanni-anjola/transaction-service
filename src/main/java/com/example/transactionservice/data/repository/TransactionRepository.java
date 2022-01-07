@@ -31,6 +31,9 @@ public class TransactionRepository {
         return (long) (transactiondb.size() + 1);
     }
 
+    public int getSize(){
+        return transactiondb.size();
+    }
     public Transaction save(Transaction transaction){
         long timeLapse = Duration.between(transaction.getTimestamp(), LocalDateTime.now()).toSeconds();
         if(timeLapse > 30)
