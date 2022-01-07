@@ -34,6 +34,6 @@ public class TransactionController {
 
     @GetMapping("/statistics")
     public ResponseEntity<?> getTransactionStats(){
-
+        return ResponseEntity.ok().body(transactionService.getTransactionStats());
     }
 }

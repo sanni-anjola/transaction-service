@@ -1,5 +1,6 @@
 package com.example.transactionservice.data.model;
 
+import com.example.transactionservice.config.AmountConfig;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Transaction {
     private Long id;
+    @JsonSerialize(using = AmountConfig.class)
     private BigDecimal amount;
 //    @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

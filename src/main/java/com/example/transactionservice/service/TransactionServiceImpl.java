@@ -1,5 +1,6 @@
 package com.example.transactionservice.service;
 
+import com.example.transactionservice.data.dao.TransactionStat;
 import com.example.transactionservice.data.model.Transaction;
 import com.example.transactionservice.data.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,10 @@ public class TransactionServiceImpl implements TransactionService{
     @Override
     public void deleteAllTransactions() {
         transactionRepository.deleteAll();
+    }
+
+    @Override
+    public TransactionStat getTransactionStats() {
+        return transactionRepository.getStats();
     }
 }

@@ -1,16 +1,20 @@
 package com.example.transactionservice.data.repository;
 
+import com.example.transactionservice.data.dao.TransactionStat;
 import com.example.transactionservice.data.model.Transaction;
 import com.example.transactionservice.exception.FutureTransactionException;
 import com.example.transactionservice.exception.StaleTransactionException;
 import com.example.transactionservice.exception.TransactionException;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Collectors;
 
 @Component
 public class TransactionRepository {
@@ -48,7 +52,26 @@ public class TransactionRepository {
         transactiondb.clear();
     }
 
-    public
+    public TransactionStat getStats(){
+        if(transactiondb.isEmpty()) return new TransactionStat();
+        List<BigDecimal> t = transactiondb.values().stream().filter(e ->
+                Duration.between(e.getTimestamp(), LocalDateTime.now()).toSeconds() > 30
+        ).map(Transaction::getAmount).toList();
+        BigDecimal sum = t.stream().parallel().reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal max = t.stream().parallel().max(BigDecimal::compareTo).get();
+        BigDecimal min = t.stream().parallel().min(BigDecimal::compareTo).get();
+        TransactionStat stat = TransactionStat
+                .builder()
+                .sum(sum)
+                .avg(sum.divide(BigDecimal.valueOf(t.size())))
+                .count((long) t.size())
+                .max(max)
+                .min(min)
+                .build();
+
+        return stat;
+    }
+
 
 
     private static class TransactionRepositorySingletonHelper{
