@@ -44,6 +44,12 @@ public class TransactionRepository {
         return transactiondb.values().stream().toList();
     }
 
+    public void deleteAll(){
+        transactiondb.clear();
+    }
+
+    public
+
 
     private static class TransactionRepositorySingletonHelper{
         private static final TransactionRepository instance = new TransactionRepository();

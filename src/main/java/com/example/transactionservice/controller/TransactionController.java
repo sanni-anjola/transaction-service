@@ -25,4 +25,15 @@ public class TransactionController {
     public ResponseEntity<?> getTransactions(){
         return ResponseEntity.ok().body(transactionService.getAllTransactions());
     }
+
+    @DeleteMapping("/transactions")
+    public ResponseEntity<?> deleteTransactions(){
+        transactionService.deleteAllTransactions();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<?> getTransactionStats(){
+
+    }
 }
