@@ -57,16 +57,16 @@ public class TransactionRepository {
 
     public TransactionStat getStats(){
         if(transactiondb.isEmpty()) return new TransactionStat();
-        List<BigDecimal> t = transactiondb.values().stream().filter(e ->
+        List<BigDecimal> t = transactiondb.values().stream().parallel().filter(e ->
                 Duration.between(e.getTimestamp(), LocalDateTime.now()).toSeconds() > 30
         ).map(Transaction::getAmount).toList();
         BigDecimal sum = t.stream().parallel().reduce(BigDecimal.ZERO, BigDecimal::add);
-        BigDecimal max = t.stream().parallel().max(BigDecimal::compareTo).get();
-        BigDecimal min = t.stream().parallel().min(BigDecimal::compareTo).get();
+        BigDecimal max = t.stream().parallel().max(BigDecimal::compareTo).orElse(null);
+        BigDecimal min = t.stream().parallel().min(BigDecimal::compareTo).orElse(null);
         TransactionStat stat = TransactionStat
                 .builder()
                 .sum(sum)
-                .avg(sum.divide(BigDecimal.valueOf(t.size())))
+//                .avg(sum.divide(BigDecimal.valueOf(t.size())))
                 .count((long) t.size())
                 .max(max)
                 .min(min)

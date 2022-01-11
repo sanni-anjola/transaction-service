@@ -4,10 +4,7 @@ import com.example.transactionservice.data.dao.TransactionStat;
 import com.example.transactionservice.data.model.Transaction;
 import com.example.transactionservice.exception.FutureTransactionException;
 import com.example.transactionservice.exception.StaleTransactionException;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -98,6 +95,30 @@ class TransactionRepositoryTest {
 
     }
 
+    @Test
+    @Disabled
+    @DisplayName("Test that the app can get Statistics of transactions")
+    void getStats() throws InterruptedException {
+        // Given
+        assertThat(transactionRepository.getSize()).isEqualTo(0);
+        //When
+        Transaction t1 = new Transaction(BigDecimal.ONE, LocalDateTime.now().minusSeconds(20));
+        Transaction t2 = new Transaction(BigDecimal.TEN, LocalDateTime.now().minusSeconds(15));
+        Transaction t3 = new Transaction(BigDecimal.TEN, LocalDateTime.now().minusSeconds(5));
+
+        transactionRepository.save(t1);
+        transactionRepository.save(t2);
+        transactionRepository.save(t3);
+
+        System.out.println(transactionRepository.getSize());
+        TransactionStat stats = transactionRepository.getStats();
+
+        assertThat(stats.getCount()).isEqualTo(3);
+        assertThat(stats.getSum()).isEqualTo(BigDecimal.valueOf(21));
+        assertThat(stats.getAvg()).isEqualTo(BigDecimal.valueOf(7));
+        assertThat(stats.getMax()).isEqualTo(BigDecimal.TEN);
+        assertThat(stats.getMin()).isEqualTo(BigDecimal.ONE);
+    }
 
     @DisplayName("Test that Only one instance of the repository exists")
     @Test
